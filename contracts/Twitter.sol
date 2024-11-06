@@ -15,8 +15,8 @@ contract Twitter {
     uint16  MAX_TWEET_LENGHT = 280;
 
     event TweetCreated(address author, uint256 indexed id, string content, uint256 indexed timestamp);
-    event TweetLiked(address liker, address author, uint256 tweetId, string content, uint256 tweetLikes);
-    event TweetDisliked(address liker, address author, uint256 tweetId, string content, uint256 tweetLikes);
+    event TweetLiked(address liker, address author, uint256 tweetId, uint256 tweetLikes);
+    event TweetDisliked(address liker, address author, uint256 tweetId, uint256 tweetLikes);
 
     constructor() {
         owner = msg.sender;
@@ -45,7 +45,36 @@ contract Twitter {
 
     }
 
-    function changeTweetLength(uint16 newTweetLength) external {
+    function changeTweetLength(uint16 newTweetLength) external onlyOwner {
         MAX_TWEET_LENGHT = newTweetLength;
+    }
+
+    function likeTweet(address _author, uint256 _id) external {
+        require(tweets[_author][_id].id == _id, 'Tweet does not exist');
+        
+        tweets[_author][_id].likes ++;
+
+        emit TweetLiked(msg.sender, _author, _id,  tweets[msg.sender][_id].likes);
+
+    } 
+
+    function unlikeTweet(address _author, uint _id) external {
+        require (tweets[_author][_id].id == _id, 'Tweet does not exist');
+        require (tweets[_author][_id].likes > 0, 'Tweet does not have a like');
+
+        tweets[_author][_id].likes --;
+
+        emit TweetDisliked(msg.sender, _author, _id,  tweets[msg.sender][_id].likes);
+
+    } 
+
+    function getTweet(address _author, uint _id) external view returns(Tweet memory) {
+        require(tweets[_author][_id].id == _id, 'Tweet does not exist');
+
+        return tweets[_author][_id];
+    }
+
+    function getAllTweets(address _author) external view returns (Tweet[] memory) {
+        return tweets[_author];
     }
 }
