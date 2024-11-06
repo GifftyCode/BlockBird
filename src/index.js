@@ -1,7 +1,8 @@
 import contractABI from "./abi.json";
+import Web3 from "web3";
 
 // 2️⃣ Set your smart contract address 👇
-const contractAddress = "";
+const contractAddress = "0x6466Bb81Bb4D61181A09c1F8b7D180133De54687";
 
 let web3 = new Web3(window.ethereum);
 // 3️⃣ connect to the contract using web3
